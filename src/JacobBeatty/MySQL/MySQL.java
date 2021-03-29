@@ -263,27 +263,19 @@ public class MySQL {
         while(rs.next()){
             report += "Contact Name: " + rs.getString(1) + ",\t\tAppointment ID: " + rs.getString(2) + ",\t\tTitle: " + rs.getString(3) + ",\t\tType: " + rs.getString(4) + ",\t\tDescription: " + rs.getString(5) + ",\t\tStart: " + rs.getString(6) + ",\t\tEnd: " + rs.getString(7) + ",\t\tCustomer ID: " + rs.getString(8) + "\n";
         }
-
-        if(report.isEmpty()) report = "No appointments today.";
-
         return report;
     }
     public String report3() throws SQLException{
         //Setting up SQL query with variables added in
         System.out.print("Making Sql Statement... ");
-        String sql = "SELECT Contact_Name, Appointment_ID, Title, `Type`, Description, `Start`, `End`, Customer_ID \n" +
-                "FROM appointments\n" +
-                "INNER JOIN contacts USING (Contact_ID)\n" +
-                "ORDER BY Contact_Name, Start";
+        String sql = "SELECT * FROM contacts";
         PreparedStatement ps = this.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
 
         String report = "";
         while(rs.next()){
-            report += "Contact Name: " + rs.getString(1) + ",\t\tAppointment ID: " + rs.getString(2) + ",\t\tTitle: " + rs.getString(3) + ",\t\tType: " + rs.getString(4) + ",\t\tDescription: " + rs.getString(5) + ",\t\tStart: " + rs.getString(6) + ",\t\tEnd: " + rs.getString(7) + ",\t\tCustomer ID: " + rs.getString(8) + "\n";
+            report += "" + rs.getString(2)  + ", ";
         }
-
-        if(report.isEmpty()) report = "No appointments today.";
 
         return report;
     }
