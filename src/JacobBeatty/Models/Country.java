@@ -7,7 +7,7 @@ public class Country {
     /**
      * List object used to refrence all countrys
      */
-    public static ObservableList<Country> countryList = FXCollections.observableArrayList();
+    public static ObservableList<Country> listOfCountries = FXCollections.observableArrayList();
 
     private final int countryID;
     private final String countryName;
@@ -28,11 +28,11 @@ public class Country {
      * @param id the id of the country you want to return
      * @return the country of the id entered
      */
-    public static Country findCountryById(int id) {
+    public static Country getCountryByID(int id) {
         int i = 0;
-        while (i < countryList.size()) {
-            if (id == countryList.get(i).countryID)
-                return countryList.get(i);
+        while (i < listOfCountries.size()) {
+            if (id == listOfCountries.get(i).countryID)
+                return listOfCountries.get(i);
             i++;
         }
         return null;

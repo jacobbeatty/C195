@@ -12,9 +12,9 @@ public class Log {
      * @throws IOException
      */
     public static void generateLog(String str) throws IOException {
-        str = LocalDateTime.now().toString() + ": " + str;
+        str = LocalDateTime.now().toString() + ": " + str + "\n";
             FileWriter logWriter = new FileWriter("login_activity.txt", true);
-            logWriter.append(str + "\n");
+            logWriter.append(str);
             logWriter.close();
     }
 }

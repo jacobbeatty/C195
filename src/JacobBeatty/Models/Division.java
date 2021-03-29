@@ -25,7 +25,7 @@ public class Division {
      * @param ID
      * @return
      */
-    public static Division findDivisionByID(int ID) {
+    public static Division getDivByID(int ID) {
         int i = 0;
         while (i < listOfDivisions.size()) {
             if (ID == listOfDivisions.get(i).getID())
@@ -33,6 +33,19 @@ public class Division {
             i++;
         }
         return null;
+
+    }
+
+    public static ObservableList<Division> getDivisionByCountry(Country country) {
+        ObservableList<Division> temp = FXCollections.observableArrayList();
+
+        int i = 0;
+        while (i < listOfDivisions.size()) {
+            if (country == listOfDivisions.get(i).getCountry())
+                temp.add(listOfDivisions.get(i));
+            i++;
+        }
+        return temp;
     }
     //Getters
     public int getID() {
@@ -44,5 +57,12 @@ public class Division {
     public Country getCountry() {
         return this.country;
     }
+    //Overriding toString to fix memory reference bug
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+
 
 }

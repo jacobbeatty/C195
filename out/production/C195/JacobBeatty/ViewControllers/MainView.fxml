@@ -4,78 +4,82 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="403.0" prefWidth="969.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JacobBeatty.ViewControllers.MainViewController">
+<VBox prefHeight="200.0" prefWidth="995.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JacobBeatty.ViewControllers.MainViewController">
    <children>
-      <TabPane layoutY="2.0" prefHeight="403.0" prefWidth="969.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="Customers">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="CustomerList" layoutY="39.0" prefHeight="343.0" prefWidth="963.0">
-                          <columns>
-                            <TableColumn fx:id="CustomerID" prefWidth="75.0" text="ID" />
-                            <TableColumn fx:id="CustomerName" prefWidth="75.0" text="Name" />
-                              <TableColumn fx:id="CustomerAddress" prefWidth="437.0" text="Address" />
-                              <TableColumn fx:id="CustomerDivisions" minWidth="0.0" prefWidth="140.0" text="State/Region" />
-                              <TableColumn fx:id="CustomerZip" prefWidth="101.0" text="Zip Code" />
-                              <TableColumn fx:id="CustomerPhone" prefWidth="134.0" text="Phone Number" />
-                          </columns>
-                        </TableView>
-                        <ButtonBar buttonMinWidth="50.0" layoutX="-23.0" layoutY="7.0" prefHeight="25.0" prefWidth="215.0">
-                          <buttons>
-                              <Button mnemonicParsing="false" text="Add" />
-                            <Button mnemonicParsing="false" text="Update" />
-                              <Button minWidth="42.0" mnemonicParsing="false" prefHeight="25.0" text="Delete" />
-                          </buttons>
-                        </ButtonBar>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Appointments">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView layoutY="39.0" prefHeight="340.0" prefWidth="963.0">
-                           <columns>
-                              <TableColumn prefWidth="75.0" text="ID" />
-                              <TableColumn prefWidth="75.0" text="Title" />
-                              <TableColumn prefWidth="185.0" text="Description" />
-                              <TableColumn prefWidth="122.0" text="Location" />
-                              <TableColumn minWidth="0.0" prefWidth="110.0" text="Contact" />
-                              <TableColumn prefWidth="71.0" text="Type" />
-                              <TableColumn prefWidth="119.0" text="Start Date/Time" />
-                              <TableColumn prefWidth="99.0" text="End Date/Time" />
-                              <TableColumn prefWidth="106.0" text="Customer ID" />
-                           </columns>
-                        </TableView>
-                        <ButtonBar buttonMinWidth="50.0" layoutX="-23.0" layoutY="7.0" prefHeight="25.0" prefWidth="215.0">
-                           <buttons>
-                              <Button mnemonicParsing="false" text="Add" />
-                              <Button mnemonicParsing="false" text="Update" />
-                              <Button minWidth="42.0" mnemonicParsing="false" prefHeight="25.0" text="Delete" />
-                           </buttons>
-                        </ButtonBar>
-                        <RadioButton layoutX="817.0" layoutY="11.0" mnemonicParsing="false" text="Week" />
-                        <RadioButton layoutX="874.0" layoutY="11.0" mnemonicParsing="false" text="Month" />
-                        <Label layoutX="779.0" layoutY="11.0" text="View:">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
+      <ScrollPane minViewportHeight="900.0" minViewportWidth="980.0" prefHeight="695.0" prefWidth="806.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1023.0" prefWidth="976.0">
+               <children>
+                  <TableView fx:id="CustomerList" layoutY="39.0" prefHeight="343.0" prefWidth="963.0">
+                     <columns>
+                        <TableColumn fx:id="CustomerID" prefWidth="75.0" text="ID" />
+                        <TableColumn fx:id="CustomerName" prefWidth="75.0" text="Name" />
+                        <TableColumn fx:id="CustomerAddress" prefWidth="437.0" text="Address" />
+                        <TableColumn fx:id="CustomerDivisions" minWidth="0.0" prefWidth="140.0" text="State/Region" />
+                        <TableColumn fx:id="CustomerZip" prefWidth="101.0" text="Zip Code" />
+                        <TableColumn fx:id="CustomerPhone" prefWidth="134.0" text="Phone Number" />
+                     </columns>
+                  </TableView>
+                  <ButtonBar buttonMinWidth="50.0" layoutX="-23.0" layoutY="7.0" prefHeight="25.0" prefWidth="215.0">
+                     <buttons>
+                        <Button mnemonicParsing="false" onAction="#addCustomerClicked" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#modifyCustomerClicked" text="Modify" />
+                        <Button minWidth="42.0" mnemonicParsing="false" onAction="#deleteCustomerClicked" prefHeight="25.0" text="Delete" />
+                     </buttons>
+                  </ButtonBar>
+                  <TableView fx:id="AppointmentList" layoutX="3.0" layoutY="436.0" prefHeight="340.0" prefWidth="963.0">
+                     <columns>
+                        <TableColumn fx:id="AppointmentID" prefWidth="75.0" text="ID" />
+                        <TableColumn fx:id="AppointmentTitle" prefWidth="75.0" text="Title" />
+                        <TableColumn fx:id="AppointmentDescription" prefWidth="185.0" text="Description" />
+                        <TableColumn fx:id="AppointmentLocation" prefWidth="122.0" text="Location" />
+                        <TableColumn fx:id="AppointmentContact" minWidth="0.0" prefWidth="110.0" text="Contact" />
+                        <TableColumn fx:id="AppointmentType" prefWidth="71.0" text="Type" />
+                        <TableColumn fx:id="AppointmentStart" prefWidth="119.0" text="Start Date/Time" />
+                        <TableColumn fx:id="AppointmentEnd" prefWidth="99.0" text="End Date/Time" />
+                        <TableColumn fx:id="AppointmentCustomer" prefWidth="106.0" text="Customer ID" />
+                     </columns>
+                  </TableView>
+                  <Label layoutX="454.0" layoutY="11.0" text="Customers" />
+                  <Label layoutX="444.0" layoutY="406.0" text="Appointments" />
+                  <Button layoutX="14.0" layoutY="395.0" mnemonicParsing="false" onAction="#addAppointmentClicked" text="Add" />
+                  <Button layoutX="76.0" layoutY="395.0" mnemonicParsing="false" onAction="#modifyAppointmentClicked" text="Update" />
+                  <Button layoutX="141.0" layoutY="395.0" minWidth="42.0" mnemonicParsing="false" onAction="#deleteAppointmentClicked" prefHeight="25.0" text="Delete" />
+                  <RadioButton fx:id="byWeek" layoutX="704.0" layoutY="406.0" mnemonicParsing="false" onAction="#viewRadioChange" text="Week">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="ViewBy" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="byMonth" layoutX="761.0" layoutY="406.0" mnemonicParsing="false" onAction="#viewRadioChange" text="Month">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="ViewBy" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <Label layoutX="666.0" layoutY="406.0" text="View:">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="833.0" layoutY="402.0" mnemonicParsing="false" onAction="#previous" text="Previous" />
+                  <Button layoutX="907.0" layoutY="402.0" mnemonicParsing="false" onAction="#next" text="Next" />
+                  <Label layoutX="3.0" layoutY="782.0" text="Customer Appointments by Type and Month" />
+                  <TextArea fx:id="Report1" editable="false" layoutX="4.0" layoutY="799.0" prefHeight="65.0" prefWidth="963.0" />
+                  <Label layoutX="3.0" layoutY="871.0" text="Contact Schedules:" />
+                  <TextArea fx:id="Report2" editable="false" layoutX="4.0" layoutY="888.0" prefHeight="65.0" prefWidth="963.0" />
+                  <Label layoutX="2.0" layoutY="960.0" text="Number of past appointments: " />
+                  <TextArea fx:id="Report3" editable="false" layoutX="4.0" layoutY="977.0" prefHeight="38.0" prefWidth="963.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
    </children>
-</AnchorPane>
+</VBox>
