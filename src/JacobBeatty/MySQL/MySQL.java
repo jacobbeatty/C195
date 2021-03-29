@@ -10,31 +10,32 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static JacobBeatty.Models.Appointment.AppointmentTable;
+import static java.sql.DriverManager.getConnection;
 
 public class MySQL {
     public static MySQL database;
     private final Connection connection;
     public MySQL() throws SQLException {
-        String connectionString = "jdbc:mysql://wgudb.ucertify.com:3306/WJ07T3V?autoReconnect=true";
-        this.connection = DriverManager.getConnection(connectionString, "U07T3V", "53689123060");
+        var connectionString = "jdbc:mysql://wgudb.ucertify.com:3306/WJ07T3V?autoReconnect=true";
+        this.connection = getConnection(connectionString, "U07T3V", "53689123060");
     }
-
     private int verifiedUsername;
     private String verifiedLogin;
-    public boolean verifyUser(String User, String Pass) throws SQLException {
-
-        String userSearch = "SELECT * FROM users WHERE User_Name=?;";
+    public boolean verifyLogin(String Username, String Password) throws SQLException {
+        boolean res = false;
+        String userSearch;
+        userSearch = "SELECT * FROM users WHERE User_Name=?;";
         PreparedStatement query = this.connection.prepareStatement(userSearch);
-        query.setString(1, User);
+        query.setString(1, Username);
         ResultSet result = query.executeQuery();
-        if(!result.next()) return false;
-        if (!Pass.matches(result.getString("Password"))) {
-            return false;
-        } else {
-            this.verifiedUsername = result.getInt("User_ID");
-            this.verifiedLogin = result.getString("User_Name");
-            return true;
+        if (result.next()) {
+            if (Password.matches(result.getString("Password"))) {
+                this.verifiedUsername = result.getInt("User_ID");
+                this.verifiedLogin = result.getString("User_Name");
+                res = true;
+            }
         }
+        return res;
     }
     public void updateCountryTable() throws SQLException {
         String query = "SELECT * FROM countries;";

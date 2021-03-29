@@ -6,15 +6,13 @@ import JacobBeatty.Models.Division;
 import JacobBeatty.MySQL.MySQL;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
-import javax.script.Bindings;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -39,20 +37,22 @@ public class CustomerController implements Initializable {
     private Button SaveButton;
     @FXML
     private Button CancelButton;
-    private boolean modify = false;
-
+    private boolean modify;
 
 
     @FXML
     private void savePressed(ActionEvent actionEvent) throws SQLException, IOException {
         int id;
         id = 0;
-        if (modify) id = Integer.parseInt(ID.getText());
-        String name = Name.getText();
-        String address = Address.getText();
-        String zip = Zip.getText();
-        String phone = Phone.getText();
-        Division division = Division.getValue();
+        if (!modify) {
+        } else id = Integer.parseInt(ID.getText());
+        String name, address, zip, phone;
+        Division division;
+        name = Name.getText();
+        address = Address.getText();
+        zip = Zip.getText();
+        phone = Phone.getText();
+        division = Division.getValue();
         Customer customer = new Customer(id, name, address, zip, phone, division);
         if (Name.getText().trim().isEmpty() || Address.getText().trim().isEmpty() || Zip.getText().trim().isEmpty() || Phone.getText().trim().isEmpty() || Division.getValue() == null){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -65,20 +65,19 @@ public class CustomerController implements Initializable {
             else MySQL.database.newCustomer(customer);
             ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
         }
-
     }
     @FXML
     private void changeCountry(ActionEvent event) {
-        Country selected = Country.getValue();
+        Country selected;
+        selected = Country.getValue();
         Division.setDisable(false);
         Division.setItems(JacobBeatty.Models.Division.getDivisionByCountry(selected));
     }
     @FXML
     private void cancelButtonPressed(javafx.event.ActionEvent actionEvent) throws IOException {
         ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
-
     }
-    public void fillInfo(Customer customer) {
+    public void fillCustomerInfo(Customer customer) {
         ID.setText(""+customer.getCustomerID());
         Name.setText(customer.getCustomerName());
         Address.setText(customer.getCustomerAddress());
@@ -88,12 +87,9 @@ public class CustomerController implements Initializable {
         Division.setValue(customer.getCustomerDivision());
         modify = true;
     }
-
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Country.setItems(JacobBeatty.Models.Country.listOfCountries);
-
+        modify = false;
     }
 }
