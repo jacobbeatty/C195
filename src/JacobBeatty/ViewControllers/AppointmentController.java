@@ -16,7 +16,14 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.ResourceBundle;
+
+import static JacobBeatty.Models.Contact.ContactTable;
+import static JacobBeatty.Models.Customer.CustomerTable;
+import static java.time.LocalTime.*;
+import static javafx.collections.FXCollections.*;
+import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
 
 public class AppointmentController implements Initializable {
     @FXML
@@ -28,18 +35,11 @@ public class AppointmentController implements Initializable {
     @FXML
     private TextField AppointmentLocation;
     @FXML
-    private ComboBox<Contact> AppointmentContact;
-    @FXML
     private TextField AppointmentType;
-    @FXML
-    private DatePicker AppointmentStartDate;
     @FXML
     private ComboBox<Integer> AppointmentStartHour;
     @FXML
     private ComboBox<Integer> AppointmentStartMin;
-
-    @FXML
-    private DatePicker AppointmentEndDate;
     @FXML
     private ComboBox<Integer> AppointmentEndHour;
     @FXML
@@ -47,30 +47,30 @@ public class AppointmentController implements Initializable {
     @FXML
     private ComboBox<Customer> AppointmentCustomer;
     @FXML
-    private Button SaveButton;
+    private ComboBox<Contact> AppointmentContact;
     @FXML
-    private Button CancelButton;
-
+    private DatePicker AppointmentEndDate;
+    @FXML
+    private DatePicker AppointmentStartDate;
     @FXML
     private void CancelPressed(ActionEvent event) {
         ((Node)(event.getSource())).getScene().getWindow().hide();
     }
     private boolean modify = false;
 
-    public void prefill(Appointment appointment) {                                         //PreFill all Customer info
+    public void fillInAppointmentData(Appointment appointment) {
         modify = true;
-
         AppointmentID.setText(String.valueOf(appointment.getAppointmentID()));
         AppointmentTitle.setText(appointment.getTitle());
         AppointmentDescription.setText(appointment.getDescription());
         AppointmentLocation.setText(appointment.getLocation());
         AppointmentContact.setValue(appointment.getContact());
         AppointmentType.setText(appointment.getType());
-        ZonedDateTime convertedStart = appointment.getStartTimeObj().withZoneSameInstant(ZoneId.systemDefault());
+        var convertedStart = appointment.getStartTimeObj().withZoneSameInstant(ZoneId.systemDefault());
         AppointmentStartDate.setValue(convertedStart.toLocalDate());
         AppointmentStartHour.setValue(convertedStart.getHour());
         AppointmentStartMin.setValue(convertedStart.getMinute());
-        ZonedDateTime convertedEnd = appointment.getEndTimeObj().withZoneSameInstant(ZoneId.systemDefault());
+        var convertedEnd = appointment.getEndTimeObj().withZoneSameInstant(ZoneId.systemDefault());
         AppointmentEndDate.setValue(convertedEnd.toLocalDate());
         AppointmentEndHour.setValue(convertedEnd.getHour());
         AppointmentEndMin.setValue(convertedEnd.getMinute());
@@ -87,144 +87,155 @@ public class AppointmentController implements Initializable {
             alert.setContentText("Form contains blank fields.");
             alert.showAndWait();
         } else {
-        String tmp;
-        tmp = AppointmentID.getText();
+            String tmp = AppointmentID.getText();
         int ID = 0;
         if (modify) ID = Integer.parseInt(tmp);
 
-        String title = AppointmentTitle.getText();
-        String des = AppointmentDescription.getText();
-        String Loc = AppointmentLocation.getText();
-        Contact contact = AppointmentContact.getValue();
-        String type = AppointmentType.getText();
-        LocalDate beginDate = AppointmentStartDate.getValue();
-        String startHr = AppointmentStartHour.getValue().toString();
-        String startMin = AppointmentStartMin.getValue().toString();
-        if (startHr.length() < 2) startHr = "0" + startHr;
-        if (startMin.length() < 2) startMin = "0" + startMin;
-        System.out.println(startHr + ":" + startMin);
-        LocalTime beginTime = LocalTime.parse(startHr + ":" + startMin, DateTimeFormatter.ISO_TIME);
-        ZonedDateTime begin = ZonedDateTime.of(beginDate, beginTime, ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC+0"));
-        System.out.println("Time: " + beginTime);
-        System.out.println("TimeDate: " + begin);
+            String title;
+            title = AppointmentTitle.getText();
+            String descriptionText = AppointmentDescription.getText();
+            String locationText;
+            locationText = AppointmentLocation.getText();
+            Contact contactValue = AppointmentContact.getValue();
+            String typeText;
+            typeText = AppointmentType.getText();
+            LocalDate startDateValue;
+            startDateValue = AppointmentStartDate.getValue();
+            String startHour;
+            startHour = AppointmentStartHour.getValue().toString();
+            String startMinute = AppointmentStartMin.getValue().toString();
+            if (startHour.length() >= 2) {
+                if (startMinute.length() >= 2) {
+                } else {
+                    startMinute = "0" + startMinute;
+                }
+            } else {
+                startHour = "0" + startHour;
+                if (startMinute.length() >= 2) {
+                } else {
+                    startMinute = "0" + startMinute;
+                }
+            }
+            LocalTime startTime;
+            startTime = parse(startHour + ":" + startMinute, DateTimeFormatter.ISO_TIME);
+            var begin = ZonedDateTime.of(startDateValue, startTime, ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC+0"));
+            LocalDate endDate;
+            endDate = AppointmentEndDate.getValue();
+            String endHour;
+            endHour = AppointmentEndHour.getValue().toString();
+            String endMinute = AppointmentEndMin.getValue().toString();
+            if (endHour.length() >= 2) {
+            } else {
+                endHour = "0" + endHour;
+            }
+            if (endMinute.length() < 2) endMinute = "0" + endMinute;
+            LocalTime endTime;
+            endTime = parse(endHour + ":" + endMinute, DateTimeFormatter.ISO_TIME);
+            ZonedDateTime end;
+            end = ZonedDateTime.of(endDate, endTime, ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC+0"));
 
-        LocalDate endDate = AppointmentEndDate.getValue();
-        String endHr = AppointmentEndHour.getValue().toString();
-        String endMin = AppointmentEndMin.getValue().toString();
-        if (endHr.length() < 2) endHr = "0" + endHr;
-        if (endMin.length() < 2) endMin = "0" + endMin;
-        LocalTime endTime = LocalTime.parse(endHr + ":" + endMin, DateTimeFormatter.ISO_TIME);
-        ZonedDateTime end = ZonedDateTime.of(endDate, endTime, ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC+0"));
-
-        Customer customer = AppointmentCustomer.getValue();
-        Appointment appointment = new Appointment(ID, title, des, Loc, contact, type, begin.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), customer);
+            Customer customer = AppointmentCustomer.getValue();
+            Appointment appointment;
+            appointment = new Appointment(ID, title, descriptionText, locationText, contactValue, typeText, begin.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), customer);
 
             if (!businessHoursCheck(appointment)) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                Alert alert = new Alert(CONFIRMATION);
                 alert.setTitle("Outside of business hours.");
                 alert.setHeaderText("Please select a time and day that is within business hours.");
                 alert.showAndWait();
                 return;
             }
-
-            //We need to check if the new appointment will overlap any existing appointment
             if (isOverlapping(appointment)) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                Alert alert = new Alert(CONFIRMATION);
                 alert.setTitle("This overlaps with another appointment.");
                 alert.setHeaderText("Please select a time that does not overlap with other appointments.");
                 alert.showAndWait();
                 return;
             }
 
-            try {
-                if (modify) MySQL.database.updateAppointment(appointment);
-                else MySQL.database.addAppointment(appointment);
+                if (!modify) {
+                    MySQL.database.addAppointment(appointment);
+                } else {
+                    MySQL.database.updateAppointment(appointment);
+                }
 
-            } catch (SQLException e) {
-                System.out.println("SQL Error!!! " + e);
-            }
+
             ((Node) (event.getSource())).getScene().getWindow().hide();
         }
     }
 
-    private boolean businessHoursCheck(Appointment app){
-        ZonedDateTime start = app.getStartTimeObj().withZoneSameInstant(ZoneId.of("America/New_York"));
-        ZonedDateTime end = app.getEndTimeObj().withZoneSameInstant(ZoneId.of("America/New_York"));
-
-        ZonedDateTime startLimit1 = ZonedDateTime.of(start.toLocalDate(), LocalTime.of(7, 59), ZoneId.of("America/New_York"));
-        ZonedDateTime stopLimit1 = ZonedDateTime.of(start.toLocalDate(), LocalTime.of(22, 1), ZoneId.of("America/New_York"));
-        ZonedDateTime startLimit2 = ZonedDateTime.of(end.toLocalDate(), LocalTime.of(7, 59), ZoneId.of("America/New_York"));
-        ZonedDateTime stopLimit2 = ZonedDateTime.of(end.toLocalDate(), LocalTime.of(22, 1), ZoneId.of("America/New_York"));
-
-        if(start.getDayOfWeek() == DayOfWeek.SATURDAY) return false;
-        if(start.getDayOfWeek() == DayOfWeek.SUNDAY) return false;
-        if(end.getDayOfWeek() == DayOfWeek.SATURDAY) return false;
-        if(start.getDayOfWeek() == DayOfWeek.SUNDAY) return false;
-        return startLimit1.isBefore(start) && stopLimit1.isAfter(start) && startLimit2.isBefore(end) && stopLimit2.isAfter(end);
+    private boolean businessHoursCheck(Appointment appointment){
+        ZonedDateTime start;
+        start = appointment.getStartTimeObj().withZoneSameInstant(ZoneId.of("America/New_York"));
+        ZonedDateTime end;
+        end = appointment.getEndTimeObj().withZoneSameInstant(ZoneId.of("America/New_York"));
+        ZonedDateTime open;
+        open = ZonedDateTime.of(start.toLocalDate(), of(7, 59), ZoneId.of("America/New_York"));
+        ZonedDateTime close;
+        close = ZonedDateTime.of(start.toLocalDate(), of(22, 1), ZoneId.of("America/New_York"));
+        ZonedDateTime startLimit2;
+        startLimit2 = ZonedDateTime.of(end.toLocalDate(), of(7, 59), ZoneId.of("America/New_York"));
+        ZonedDateTime stopLimit2;
+        stopLimit2 = ZonedDateTime.of(end.toLocalDate(), of(22, 1), ZoneId.of("America/New_York"));
+        if (start.getDayOfWeek() == DayOfWeek.SATURDAY || start.getDayOfWeek() == DayOfWeek.SUNDAY || end.getDayOfWeek() == DayOfWeek.SATURDAY || end.getDayOfWeek() == DayOfWeek.SUNDAY) return false;
+        if (open.isBefore(start))
+            if (close.isAfter(start)) if (startLimit2.isBefore(end)) if (stopLimit2.isAfter(end)) return true;
+        return false;
     }
 
     boolean overlapCheck = false;
 
 
-    private boolean isOverlapping(Appointment app){
-        ZonedDateTime start = app.getStartTimeObj();
-        ZonedDateTime end = app.getEndTimeObj();
-        System.out.println("Starting OverLap check");
+    private boolean isOverlapping(Appointment app) throws SQLException {
+        ZonedDateTime start;
+        start = app.getStartTimeObj();
+        ZonedDateTime end;
+        end = app.getEndTimeObj();
         overlapCheck = false;
-        String startDate = start.withZoneSameInstant(ZoneId.of("Z")).withHour(0).withMinute(0).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss" ));
-        String endDate = end.withZoneSameInstant(ZoneId.of("Z")).withHour(23).withMinute(59).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss" ));
-        ObservableList<Appointment> List = FXCollections.observableArrayList();
-
-        try{
-            List = MySQL.database.getAppointmentTable(startDate, endDate);
-        }
-        catch(SQLException e){
-            System.out.println("Database Error!!! " + e);
-        }
-
-        List.forEach(appList -> {
-            if(appList.getAppointmentID() != app.getAppointmentID() ){
-                if(appList.getStartTimeObj().isBefore(start)){
-                    if(appList.getEndTimeObj().isAfter(start)){
-                        overlapCheck = true;
-                        System.out.println("OverLap Check Failed!!!");
-                    }
-                }
-                else{
-                    if(end.isAfter(appList.getStartTimeObj())){
-                        overlapCheck = true;
-                        System.out.println("OverLap Check Failed!!!");
-                    }
-                }
+        String startDate;
+        startDate = start.withZoneSameInstant(ZoneId.of("Z")).withHour(0).withMinute(0).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss" ));
+        String endDate;
+        endDate = end.withZoneSameInstant(ZoneId.of("Z")).withHour(23).withMinute(59).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss" ));
+        ObservableList<Appointment> List;
+        List = MySQL.database.getAppointmentTable(startDate, endDate);
+        for (Appointment appList : List) {
+            if (appList.getAppointmentID() == app.getAppointmentID()) {
+                continue;
             }
-        });
-
-        System.out.println("Overlap check done " + overlapCheck);
+            if (!appList.getStartTimeObj().isBefore(start)) {
+                if (!end.isAfter(appList.getStartTimeObj())) {
+                    continue;
+                }
+                overlapCheck = true;
+            } else {
+                if (!appList.getEndTimeObj().isAfter(start)) {
+                    continue;
+                }
+                overlapCheck = true;
+            }
+        }
         return overlapCheck;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //fill combo boxes with lists
-        AppointmentContact.setItems(Contact.ContactTable);
-        AppointmentCustomer.setItems(Customer.CustomerTable);
-
-        //Make an observable list with 0-23 hour options
-        ObservableList<Integer> hr = FXCollections.observableArrayList();
+        AppointmentContact.setItems(ContactTable);
+        AppointmentCustomer.setItems(CustomerTable);
+        ObservableList<Integer> hour;
+        hour = observableArrayList();
         int i = 0;
-        while(i < 24) {
-            hr.add(i);
-            i++;
+        if (i < 24) {
+            do {
+                hour.add(i);
+                i++;
+            } while (i < 24);
         }
-        //make list with 0, 15, 30, 45
-        ObservableList<Integer> min = FXCollections.observableArrayList(0, 15, 30, 45);
-
-        //fill hour combo boxes with hr list
-        AppointmentStartHour.setItems(hr);
-        AppointmentEndHour.setItems(hr);
-        AppointmentStartMin.setItems(min);
-        AppointmentEndMin.setItems(min);
-
-
+        var min = observableArrayList(0, 15, 30, 45);
+        for (ComboBox<Integer> integerComboBox : Arrays.asList(AppointmentStartHour, AppointmentEndHour)) {
+            integerComboBox.setItems(hour);
+        }
+        for (ComboBox<Integer> integerComboBox : Arrays.asList(AppointmentStartMin, AppointmentEndMin)) {
+            integerComboBox.setItems(min);
+        }
     }
 }

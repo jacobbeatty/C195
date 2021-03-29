@@ -14,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import javax.swing.text.View;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -146,7 +145,7 @@ public class MainViewController implements Initializable {
             stage.setScene(scene);
             stage.show();
         AppointmentController controller = loader.getController();
-        controller.prefill(selected);
+        controller.fillInAppointmentData(selected);
 
     }
     @FXML

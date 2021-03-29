@@ -237,13 +237,15 @@ public class MySQL {
     public String report1() throws SQLException{
         //Setting up SQL query with variables added in
         System.out.print("Making Sql Statement... ");
-        String query = "SELECT COUNT(Appointment_ID) AS \"Count\", `Type` , MONTH(`Start`) AS \"Month\", YEAR(`Start`) AS \"Year\" FROM appointments a GROUP BY Year, Month, `Type`;";
+//        String query = "SELECT COUNT(Appointment_ID) AS \"Count\", `Type` , MONTH(`Start`) AS \"Month\", YEAR(`Start`) AS \"Year\" FROM appointments a GROUP BY Year, Month, `Type`;";
+        String query = "SELECT COUNT(Appointment_ID), `Type` , MONTH(`Start`), YEAR(`Start`) FROM appointments a GROUP BY MONTH(`Start`), YEAR(`Start`), `Type`;";
+
         PreparedStatement ps = this.connection.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
 
         String report = "";
         while(rs.next()){
-            report += "There are " + rs.getString(1) + " appointments of type " + rs.getString(2) + " in month " + rs.getString(3) + " of " + rs.getString(4) + ".\n";
+            report += "There are " + rs.getString(1) + " appointments of type " + rs.getString(2) + " in month " + String.format(rs.getString(3), DateTimeFormatter.ofPattern("MMM")) + " of " + rs.getString(4) + ".\n";
         }
 
         return report;

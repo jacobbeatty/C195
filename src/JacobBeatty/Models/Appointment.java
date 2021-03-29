@@ -11,12 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Appointment {
-
-    /**
-     * This is the major variable that contains all appointment objects
-     */
     public static ObservableList<Appointment> AppointmentTable = FXCollections.observableArrayList();
-
     private final SimpleIntegerProperty appointmentID;
     private final SimpleStringProperty title, description, location, type;
     private final Contact contact;
@@ -38,7 +33,6 @@ public class Appointment {
     public int getAppointmentID() {
         return this.appointmentID.get();
     }
-
     public String getTitle() {
         return this.title.get();
     }
@@ -58,25 +52,23 @@ public class Appointment {
         return this.customer;
     }
     public String getStartTime() {
-        ZonedDateTime localTime = this.startTime.withZoneSameInstant(ZoneId.systemDefault());
-        return localTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        var localTime = this.startTime.withZoneSameInstant(ZoneId.systemDefault());
+        return localTime.format(DateTimeFormatter.ofPattern("hh:mm MMM-dd-yyyy"));
     }
     public ZonedDateTime getStartTimeObj() {
         return this.startTime;
     }
     public String getStartTimeUTC() {
-        ZonedDateTime localTime = this.startTime;
-        return localTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return this.startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
     public String getEndTime() {
-        ZonedDateTime localTime = this.endTime.withZoneSameInstant(ZoneId.systemDefault());
-        return localTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        var localTime = this.endTime.withZoneSameInstant(ZoneId.systemDefault());
+        return localTime.format(DateTimeFormatter.ofPattern("hh:mm MMM-dd-yyyy"));
     }
     public ZonedDateTime getEndTimeObj() {
         return this.endTime;
     }
     public String getEndTimeUTC() {
-        ZonedDateTime localTime = this.endTime;
-        return localTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return this.endTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }
